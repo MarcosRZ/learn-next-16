@@ -11,13 +11,11 @@ import { formatCurrency } from "./utils";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
+const simulateDelay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function fetchRevenue() {
     try {
-        // Artificially delay a response for demo purposes.
-        // Don't do this in production :)
-
-        // console.log('Fetching revenue data...');
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        // await simulateDelay(1500);
 
         const data = await sql<Revenue[]>`SELECT * FROM revenue`;
 
@@ -43,7 +41,8 @@ export async function fetchLatestInvoices() {
             ...invoice,
             amount: formatCurrency(invoice.amount),
         }));
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+
+        // await simulateDelay(3000);
         return latestInvoices;
     } catch (error) {
         console.error("Database Error:", error);
@@ -74,7 +73,7 @@ export async function fetchCardData() {
         const totalPaidInvoices = formatCurrency(data[2][0].paid ?? "0");
         const totalPendingInvoices = formatCurrency(data[2][0].pending ?? "0");
 
-        await new Promise((resolve) => setTimeout(resolve, 2250));
+        // await simulateDelay(2250);
 
         return {
             numberOfCustomers,
